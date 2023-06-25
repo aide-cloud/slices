@@ -238,3 +238,18 @@ func Find[T any](a []T, f func(T) bool) (res T) {
 	}
 	return
 }
+
+// Split splits the specified slice into a slice of slices, each containing size elements, with the final slice containing the remainder.
+//
+//	Split 将指定切片分割成一个包含size个元素的切片的切片，最后一个切片包含剩余的元素
+func Split[T any](a []T, size int) [][]T {
+	if size <= 0 {
+		panic("size must be positive")
+	}
+	b := make([][]T, 0, (len(a)+size-1)/size)
+	for len(a) > size {
+		b = append(b, a[:size:size])
+		a = a[size:]
+	}
+	return append(b, a)
+}

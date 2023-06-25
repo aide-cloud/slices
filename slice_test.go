@@ -949,3 +949,36 @@ func TestFind(t *testing.T) {
 		})
 	}
 }
+
+func TestSplit(t *testing.T) {
+	type args[T any] struct {
+		a    []T
+		size int
+	}
+	type testCase[T any] struct {
+		name string
+		args args[T]
+		want [][]T
+	}
+	tests := []testCase[int]{
+		{
+			name: "test1",
+			args: args[int]{
+				a:    []int{1, 2, 3, 4, 5, 6, 7, 8, 9},
+				size: 3,
+			},
+			want: [][]int{
+				{1, 2, 3},
+				{4, 5, 6},
+				{7, 8, 9},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Split(tt.args.a, tt.args.size); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Split() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
