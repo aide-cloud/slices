@@ -982,3 +982,763 @@ func TestSplit(t *testing.T) {
 		})
 	}
 }
+
+func TestNew(t *testing.T) {
+	type args[T any] struct {
+		v []T
+	}
+	type testCase[T any] struct {
+		name string
+		args args[T]
+		want []T
+	}
+	tests := []testCase[int]{
+		{
+			name: "test1",
+			args: args[int]{
+				v: []int{1, 2, 3, 4, 5, 6, 7, 8, 9},
+			},
+			want: []int{1, 2, 3, 4, 5, 6, 7, 8, 9},
+		},
+		{
+			name: "test2",
+			args: args[int]{
+				v: []int{},
+			},
+			want: []int{},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := NewList(tt.args.v...); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewList() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestCopy(t *testing.T) {
+	type args[T any] struct {
+		a []T
+	}
+	type testCase[T any] struct {
+		name string
+		args args[T]
+		want []T
+	}
+	tests := []testCase[int]{
+		{
+			name: "test1",
+			args: args[int]{
+				a: []int{1, 2, 3, 4, 5, 6, 7, 8, 9},
+			},
+			want: []int{1, 2, 3, 4, 5, 6, 7, 8, 9},
+		}, {
+			name: "test2",
+			args: args[int]{
+				a: []int{},
+			},
+			want: []int{},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Copy(tt.args.a); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Copy() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestAppend(t *testing.T) {
+	type args[T any] struct {
+		a [][]T
+	}
+	type testCase[T any] struct {
+		name string
+		args args[T]
+		want []T
+	}
+	tests := []testCase[int]{
+		{
+			name: "test1",
+			args: args[int]{
+				a: [][]int{
+					{1, 2, 3},
+					{4, 5, 6},
+					{7, 8, 9},
+				},
+			},
+			want: []int{1, 2, 3, 4, 5, 6, 7, 8, 9},
+		}, {
+			name: "test2",
+			args: args[int]{
+				a: [][]int{
+					{},
+					{1, 2, 3},
+					{},
+					{4, 5, 6},
+				},
+			},
+			want: []int{1, 2, 3, 4, 5, 6},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Append(tt.args.a...); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Append() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestPrepend(t *testing.T) {
+	type args[T any] struct {
+		a []T
+		b [][]T
+	}
+	type testCase[T any] struct {
+		name string
+		args args[T]
+		want []T
+	}
+	tests := []testCase[int]{
+		{
+			name: "test1",
+			args: args[int]{
+				a: []int{1, 2, 3},
+				b: [][]int{
+					{4, 5, 6},
+					{7, 8, 9},
+				},
+			},
+			want: []int{4, 5, 6, 7, 8, 9, 1, 2, 3},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Prepend(tt.args.a, tt.args.b...); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Prepend() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestInsert(t *testing.T) {
+	type args[T any] struct {
+		a []T
+		i int
+		v []T
+	}
+	type testCase[T any] struct {
+		name string
+		args args[T]
+		want []T
+	}
+	tests := []testCase[int]{
+		{
+			name: "test1",
+			args: args[int]{
+				a: []int{1, 2, 3},
+				i: 1,
+				v: []int{4, 5, 6},
+			},
+			want: []int{1, 4, 5, 6, 2, 3},
+		}, {
+			name: "test2",
+			args: args[int]{
+				a: []int{1, 2, 3},
+				i: 0,
+				v: []int{4, 5, 6},
+			},
+			want: []int{4, 5, 6, 1, 2, 3},
+		}, {
+			name: "test3",
+			args: args[int]{
+				a: []int{1, 2, 3},
+				i: 3,
+				v: []int{4, 5, 6},
+			},
+			want: []int{1, 2, 3, 4, 5, 6},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Insert(tt.args.a, tt.args.i, tt.args.v...); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Insert() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestInsertAll(t *testing.T) {
+	type args[T any] struct {
+		a []T
+		i int
+		v []T
+	}
+	type testCase[T any] struct {
+		name string
+		args args[T]
+		want []T
+	}
+	tests := []testCase[int]{
+		{
+			name: "test1",
+			args: args[int]{
+				a: []int{1, 2, 3},
+				i: 1,
+				v: []int{4, 5, 6},
+			},
+			want: []int{1, 4, 5, 6, 2, 3},
+		}, {
+			name: "test2",
+			args: args[int]{
+				a: []int{1, 2, 3},
+				i: 0,
+				v: []int{4, 5, 6},
+			},
+			want: []int{4, 5, 6, 1, 2, 3},
+		}, {
+			name: "test3",
+			args: args[int]{
+				a: []int{1, 2, 3},
+				i: 3,
+				v: []int{4, 5, 6},
+			},
+			want: []int{1, 2, 3, 4, 5, 6},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := InsertAll(tt.args.a, tt.args.i, tt.args.v); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("InsertAll() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestRemove(t *testing.T) {
+	type args[T any] struct {
+		a []T
+		i int
+	}
+	type testCase[T any] struct {
+		name string
+		args args[T]
+		want []T
+	}
+	tests := []testCase[int]{
+		{
+			name: "test1",
+			args: args[int]{
+				a: []int{1, 2, 3},
+				i: 1,
+			},
+			want: []int{1, 3},
+		}, {
+			name: "test2",
+			args: args[int]{
+				a: []int{1, 2, 3},
+				i: 0,
+			},
+			want: []int{2, 3},
+		}, {
+			name: "test3",
+			args: args[int]{
+				a: []int{1, 2, 3},
+				i: 2,
+			},
+			want: []int{1, 2},
+		}, {
+			name: "test4",
+			args: args[int]{
+				a: []int{1, 2, 3},
+				i: 3,
+			},
+			want: []int{1, 2, 3},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Remove(tt.args.a, tt.args.i); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Remove() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestRemoveAll(t *testing.T) {
+	type args[T comparable] struct {
+		a []T
+		v T
+	}
+	type testCase[T comparable] struct {
+		name string
+		args args[T]
+		want []T
+	}
+	tests := []testCase[int]{
+		{
+			name: "test1",
+			args: args[int]{
+				a: []int{1, 2, 3},
+				v: 2,
+			},
+			want: []int{1, 3},
+		}, {
+			name: "test2",
+			args: args[int]{
+				a: []int{1, 2, 3},
+				v: 1,
+			},
+			want: []int{2, 3},
+		}, {
+			name: "test3",
+			args: args[int]{
+				a: []int{1, 2, 3},
+				v: 3,
+			},
+			want: []int{1, 2},
+		}, {
+			name: "test4",
+			args: args[int]{
+				a: []int{1, 2, 3},
+				v: 4,
+			},
+			want: []int{1, 2, 3},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := RemoveAll(tt.args.a, tt.args.v); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("RemoveAll() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestRemoveIf(t *testing.T) {
+	type args[T any] struct {
+		a []T
+		f func(T) bool
+	}
+	type testCase[T any] struct {
+		name string
+		args args[T]
+		want []T
+	}
+
+	type T1 struct {
+		a int
+	}
+	tests := []testCase[T1]{
+		{
+			name: "test1",
+			args: args[T1]{
+				a: []T1{{1}, {2}, {3}},
+				f: func(t T1) bool {
+					return t.a == 2
+				},
+			},
+			want: []T1{{1}, {3}},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := RemoveIf(tt.args.a, tt.args.f); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("RemoveIf() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestRemoveFirst(t *testing.T) {
+	type args[T comparable] struct {
+		a []T
+		v T
+	}
+	type testCase[T comparable] struct {
+		name string
+		args args[T]
+		want []T
+	}
+	tests := []testCase[int]{
+		{
+			name: "test1",
+			args: args[int]{
+				a: []int{1, 2, 2, 3},
+				v: 2,
+			},
+			want: []int{1, 2, 3},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := RemoveFirst(tt.args.a, tt.args.v); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("RemoveFirst() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestRemoveLast(t *testing.T) {
+	type args[T comparable] struct {
+		a []T
+		v T
+	}
+	type testCase[T comparable] struct {
+		name string
+		args args[T]
+		want []T
+	}
+	tests := []testCase[int]{
+		{
+			name: "test1",
+			args: args[int]{
+				a: []int{1, 2, 3, 2},
+				v: 2,
+			},
+			want: []int{1, 2, 3},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := RemoveLast(tt.args.a, tt.args.v); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("RemoveLast() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestRemoveFirstIf(t *testing.T) {
+	type args[T any] struct {
+		a []T
+		f func(T) bool
+	}
+	type testCase[T any] struct {
+		name string
+		args args[T]
+		want []T
+	}
+
+	type T1 struct {
+		a int
+	}
+	tests := []testCase[T1]{
+		{
+			name: "test1",
+			args: args[T1]{
+				a: []T1{{1}, {2}, {2}, {3}},
+				f: func(t T1) bool {
+					return t.a == 2
+				},
+			},
+			want: []T1{{1}, {2}, {3}},
+		}, {
+			name: "test2",
+			args: args[T1]{
+				a: []T1{{1}, {2}, {3}},
+				f: func(t T1) bool {
+					return t.a == 1
+				},
+			},
+			want: []T1{{2}, {3}},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := RemoveFirstIf(tt.args.a, tt.args.f); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("RemoveFirstIf() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestRemoveLastIf(t *testing.T) {
+	type args[T any] struct {
+		a []T
+		f func(T) bool
+	}
+	type testCase[T any] struct {
+		name string
+		args args[T]
+		want []T
+	}
+	type T1 struct {
+		a int
+	}
+	tests := []testCase[T1]{
+		{
+			name: "test1",
+			args: args[T1]{
+				a: []T1{{1}, {2}, {3}, {2}},
+				f: func(t T1) bool {
+					return t.a == 2
+				},
+			},
+			want: []T1{{1}, {2}, {3}},
+		}, {
+			name: "test2",
+			args: args[T1]{
+				a: []T1{{1}, {2}, {3}},
+				f: func(t T1) bool {
+					return t.a == 1
+				},
+			},
+			want: []T1{{2}, {3}},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := RemoveLastIf(tt.args.a, tt.args.f); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("RemoveLastIf() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestRemoveRange(t *testing.T) {
+	type args[T any] struct {
+		a    []T
+		from int
+		to   int
+	}
+	type testCase[T any] struct {
+		name string
+		args args[T]
+		want []T
+	}
+	tests := []testCase[int]{
+		{
+			name: "test1",
+			args: args[int]{
+				a:    []int{1, 2, 3, 4, 5},
+				from: 1,
+				to:   3,
+			},
+			want: []int{1, 4, 5},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := RemoveRange(tt.args.a, tt.args.from, tt.args.to); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("RemoveRange() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestRange(t *testing.T) {
+	type args[T any] struct {
+		a []T
+		f func(int, T)
+	}
+	type testCase[T any] struct {
+		name string
+		args args[T]
+	}
+	tests := []testCase[int]{
+		{
+			name: "test1",
+			args: args[int]{
+				a: []int{1, 2, 3},
+				f: func(i int, t int) {
+
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			Range(tt.args.a, tt.args.f)
+		})
+	}
+}
+
+func TestRangeReverse(t *testing.T) {
+	type args[T any] struct {
+		a []T
+		f func(int, T)
+	}
+	type testCase[T any] struct {
+		name string
+		args args[T]
+	}
+	tests := []testCase[int]{
+		{
+			name: "test1",
+			args: args[int]{
+				a: []int{1, 2, 3},
+				f: func(i int, t int) {
+
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			RangeReverse(tt.args.a, tt.args.f)
+		})
+	}
+}
+
+func TestRangeRange(t *testing.T) {
+	type args[T any] struct {
+		a    []T
+		from int
+		to   int
+		f    func(int, T)
+	}
+	type testCase[T any] struct {
+		name string
+		args args[T]
+	}
+	tests := []testCase[int]{
+		{
+			name: "test1",
+			args: args[int]{
+				a:    []int{1, 2, 3},
+				from: 1,
+				to:   2,
+				f: func(i int, t int) {
+
+				},
+			},
+		}, {
+			name: "test1",
+			args: args[int]{
+				a:    []int{1, 2, 3},
+				from: 2,
+				to:   2,
+				f: func(i int, t int) {
+
+				},
+			},
+		}, {
+			name: "test1",
+			args: args[int]{
+				a:    []int{1, 2, 3},
+				from: 3,
+				to:   2,
+				f: func(i int, t int) {
+
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			RangeRange(tt.args.a, tt.args.from, tt.args.to, tt.args.f)
+		})
+	}
+}
+
+func TestRangeRangeReverse(t *testing.T) {
+	type args[T any] struct {
+		a    []T
+		from int
+		to   int
+		f    func(int, T)
+	}
+	type testCase[T any] struct {
+		name string
+		args args[T]
+	}
+	tests := []testCase[int]{
+		{
+			name: "test1",
+			args: args[int]{
+				a:    []int{1, 2, 3},
+				from: 1,
+				to:   2,
+				f: func(i int, t int) {
+
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			RangeRangeReverse(tt.args.a, tt.args.from, tt.args.to, tt.args.f)
+		})
+	}
+}
+
+func TestReduce(t *testing.T) {
+	type args[T any, U any] struct {
+		a       []T
+		f       func(U, T) U
+		initial U
+	}
+	type testCase[T any, U any] struct {
+		name string
+		args args[T, U]
+		want U
+	}
+	tests := []testCase[int, float64]{
+		{
+			name: "test1",
+			args: args[int, float64]{
+				a:       []int{1, 2, 3},
+				f:       func(u float64, t int) float64 { return u + float64(t) },
+				initial: 0,
+			},
+			want: 6,
+		}, {
+			name: "test1",
+			args: args[int, float64]{
+				a:       []int{1, 2, 3},
+				f:       func(u float64, t int) float64 { return u - float64(t) },
+				initial: 0,
+			},
+			want: -6,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Reduce(tt.args.a, tt.args.f, tt.args.initial); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Reduce() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestReduceReverse(t *testing.T) {
+	type args[T any, U any] struct {
+		a       []T
+		f       func(U, T) U
+		initial U
+	}
+	type testCase[T any, U any] struct {
+		name string
+		args args[T, U]
+		want U
+	}
+	tests := []testCase[int, float64]{
+		{
+			name: "test1",
+			args: args[int, float64]{
+				a:       []int{1, 2, 3},
+				f:       func(u float64, t int) float64 { return u + float64(t) },
+				initial: 0,
+			},
+			want: 6,
+		}, {
+			name: "test1",
+			args: args[int, float64]{
+				a:       []int{1, 2, 3},
+				f:       func(u float64, t int) float64 { return u - float64(t) },
+				initial: 0,
+			},
+			want: -6,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ReduceReverse(tt.args.a, tt.args.f, tt.args.initial); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("ReduceReverse() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

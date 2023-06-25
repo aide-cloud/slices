@@ -253,3 +253,252 @@ func Split[T any](a []T, size int) [][]T {
 	}
 	return append(b, a)
 }
+
+// NewList returns a new slice containing the specified values.
+//
+//	NewList 返回一个包含指定值的新切片
+func NewList[T any](v ...T) []T {
+	return v
+}
+
+// Copy returns a new slice containing the elements of the specified slice.
+//
+//	Copy 返回一个包含指定切片元素的新切片
+func Copy[T any](a []T) []T {
+	b := make([]T, len(a))
+	copy(b, a)
+	return b
+}
+
+// Append returns a new slice containing the elements of the specified slices.
+//
+//	Append 返回一个包含指定切片元素的新切片
+func Append[T any](a ...[]T) []T {
+	var n int
+	for _, x := range a {
+		n += len(x)
+	}
+	b := make([]T, 0, n)
+	for _, x := range a {
+		b = append(b, x...)
+	}
+	return b
+}
+
+// Prepend returns a new slice containing the elements of the specified slices.
+//
+//	Prepend 返回一个包含指定切片元素的新切片, 与Append插入顺序相反
+func Prepend[T any](a []T, b ...[]T) []T {
+	var n int
+	for _, x := range b {
+		n += len(x)
+	}
+	c := make([]T, 0, len(a)+n)
+	for _, x := range b {
+		c = append(c, x...)
+	}
+	c = append(c, a...)
+	return c
+}
+
+// Insert returns a new slice containing the elements of the specified slice with the specified values inserted at the specified index.
+//
+//	Insert 返回一个包含指定切片元素的新切片，该切片在指定索引处插入指定值
+func Insert[T any](a []T, index int, v ...T) []T {
+	if index < 0 || index > len(a) {
+		panic("index out of range")
+	}
+
+	return append(a[:index], append(v, a[index:]...)...)
+}
+
+// InsertAll returns a new slice containing the elements of the specified slice with the specified values inserted at the specified index.
+//
+//	InsertAll 返回一个包含指定切片元素的新切片，该切片在指定索引处插入指定切片的所有元素
+func InsertAll[T any](a []T, index int, v []T) []T {
+	return Insert(a, index, v...)
+}
+
+// Remove returns a new slice containing the elements of the specified slice with the element at the specified index removed.
+//
+//	Remove 返回一个包含指定切片元素的新切片，该切片删除指定索引处的元素
+func Remove[T any](a []T, index int) []T {
+	if index < 0 || index >= len(a) {
+		panic("index out of range")
+	}
+
+	return append(a[:index], a[index+1:]...)
+}
+
+// RemoveAll returns a new slice containing the elements of the specified slice with all elements equal to the specified value removed.
+//
+//	RemoveAll 返回一个包含指定切片元素的新切片，该切片删除所有等于指定值的元素
+func RemoveAll[T comparable](a []T, v T) []T {
+	b := make([]T, 0, len(a))
+	for _, x := range a {
+		if x != v {
+			b = append(b, x)
+		}
+	}
+	return b
+}
+
+// RemoveIf returns a new slice containing the elements of the specified slice with all elements for which the specified function returns true removed.
+//
+//	RemoveIf 返回一个包含指定切片元素的新切片，该切片删除指定函数返回true的所有元素
+func RemoveIf[T any](a []T, f func(T) bool) []T {
+	b := make([]T, 0, len(a))
+	for _, x := range a {
+		if !f(x) {
+			b = append(b, x)
+		}
+	}
+	return b
+}
+
+// RemoveFirst returns a new slice containing the elements of the specified slice with the first element equal to the specified value removed.
+//
+//	RemoveFirst 返回一个包含指定切片元素的新切片，该切片删除第一个等于指定值的元素
+func RemoveFirst[T comparable](a []T, v T) []T {
+	for i, x := range a {
+		if x == v {
+			return Remove(a, i)
+		}
+	}
+	return a
+}
+
+// RemoveLast returns a new slice containing the elements of the specified slice with the last element equal to the specified value removed.
+//
+//	RemoveLast 返回一个包含指定切片元素的新切片，该切片删除最后一个等于指定值的元素
+func RemoveLast[T comparable](a []T, v T) []T {
+	for i := len(a) - 1; i >= 0; i-- {
+		if a[i] == v {
+			return Remove(a, i)
+		}
+	}
+	return a
+}
+
+// RemoveFirstIf returns a new slice containing the elements of the specified slice with the first element for which the specified function returns true removed.
+//
+//	RemoveFirstIf 返回一个包含指定切片元素的新切片，该切片删除第一个指定函数返回true的元素
+func RemoveFirstIf[T any](a []T, f func(T) bool) []T {
+	for i, x := range a {
+		if f(x) {
+			return Remove(a, i)
+		}
+	}
+	return a
+}
+
+// RemoveLastIf returns a new slice containing the elements of the specified slice with the last element for which the specified function returns true removed.
+//
+//	RemoveLastIf 返回一个包含指定切片元素的新切片，该切片删除最后一个指定函数返回true的元素
+func RemoveLastIf[T any](a []T, f func(T) bool) []T {
+	for i := len(a) - 1; i >= 0; i-- {
+		if f(a[i]) {
+			return Remove(a, i)
+		}
+	}
+	return a
+}
+
+// RemoveRange returns a new slice containing the elements of the specified slice with the elements in the specified range removed.
+//
+//	RemoveRange 返回一个包含指定切片元素的新切片，该切片删除指定范围内的元素
+func RemoveRange[T any](a []T, from, to int) []T {
+	if from < 0 || from > len(a) {
+		panic("from index out of range")
+	}
+	if to < 0 || to > len(a) {
+		panic("to index out of range")
+	}
+	if from > to {
+		panic("from index greater than to index")
+	}
+
+	return append(a[:from], a[to:]...)
+}
+
+// Range iterates over all elements of the specified slice.
+//
+//	Range 遍历指定切片所有元素, 解决for循环中共用变量问题
+func Range[T any](a []T, f func(int, T)) {
+	for i, x := range a {
+		temp := x
+		f(i, temp)
+	}
+}
+
+// RangeReverse iterates over all elements of the specified slice in reverse order.
+//
+//	RangeReverse 反向遍历指定切片所有元素, 解决for循环中共用变量问题
+func RangeReverse[T any](a []T, f func(int, T)) {
+	for i := len(a) - 1; i >= 0; i-- {
+		temp := a[i]
+		f(i, temp)
+	}
+}
+
+// RangeRange iterates over all elements of the specified slice in the specified range.
+//
+//	RangeRange 遍历指定切片指定范围内的所有元素, 解决for循环中共用变量问题
+func RangeRange[T any](a []T, from, to int, f func(int, T)) {
+	if from < 0 || from > len(a) {
+		panic("from index out of range")
+	}
+	if to < 0 || to > len(a) {
+		panic("to index out of range")
+	}
+	if from > to {
+		panic("from index greater than to index")
+	}
+
+	for i := from; i < to; i++ {
+		temp := a[i]
+		f(i, temp)
+	}
+}
+
+// RangeRangeReverse iterates over all elements of the specified slice in the specified range in reverse order.
+//
+//	RangeRangeReverse 反向遍历指定切片指定范围内的所有元素, 解决for循环中共用变量问题
+func RangeRangeReverse[T any](a []T, from, to int, f func(int, T)) {
+	if from < 0 || from > len(a) {
+		panic("from index out of range")
+	}
+	if to < 0 || to > len(a) {
+		panic("to index out of range")
+	}
+	if from > to {
+		panic("from index greater than to index")
+	}
+
+	for i := to - 1; i >= from; i-- {
+		temp := a[i]
+		f(i, temp)
+	}
+}
+
+// Reduce reduces the specified slice to a single value by iteratively combining each element of the slice with the running result using the specified function.
+//
+//	Reduce 通过使用指定函数将切片的每个元素与运行结果迭代地组合来将指定切片减少为单个值
+func Reduce[T, U any](a []T, f func(U, T) U, initial U) U {
+	result := initial
+	for _, x := range a {
+		result = f(result, x)
+	}
+	return result
+}
+
+// ReduceReverse reduces the specified slice to a single value by iteratively combining each element of the slice in reverse order with the running result using the specified function.
+//
+//	ReduceReverse 反向通过使用指定函数将切片的每个元素与运行结果迭代地组合来将指定切片减少为单个值
+func ReduceReverse[T, U any](a []T, f func(U, T) U, initial U) U {
+	result := initial
+	for i := len(a) - 1; i >= 0; i-- {
+		result = f(result, a[i])
+	}
+	return result
+}
