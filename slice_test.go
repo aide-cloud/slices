@@ -1742,3 +1742,292 @@ func TestReduceReverse(t *testing.T) {
 		})
 	}
 }
+
+func TestPushFront(t *testing.T) {
+	type args[T any] struct {
+		a []T
+		v T
+	}
+	type testCase[T any] struct {
+		name string
+		args args[T]
+		want []T
+	}
+	tests := []testCase[int]{
+		{
+			name: "test1",
+			args: args[int]{
+				a: []int{1, 2, 3},
+				v: 4,
+			},
+			want: []int{4, 1, 2, 3},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := PushFront(tt.args.a, tt.args.v); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("PushFront() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestPushBack(t *testing.T) {
+	type args[T any] struct {
+		a []T
+		v T
+	}
+	type testCase[T any] struct {
+		name string
+		args args[T]
+		want []T
+	}
+	tests := []testCase[int]{
+		{
+			name: "test1",
+			args: args[int]{
+				a: []int{1, 2, 3},
+				v: 4,
+			},
+			want: []int{1, 2, 3, 4},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := PushBack(tt.args.a, tt.args.v); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("PushBack() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestPopFront(t *testing.T) {
+	type args[T any] struct {
+		a []T
+	}
+	type testCase[T any] struct {
+		name    string
+		args    args[T]
+		wantArr []T
+		wantR   T
+	}
+	tests := []testCase[int]{
+		{
+			name: "test1",
+			args: args[int]{
+				a: []int{1, 2, 3},
+			},
+			wantArr: []int{2, 3},
+			wantR:   1,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotArr, gotR := PopFront(tt.args.a)
+			if !reflect.DeepEqual(gotArr, tt.wantArr) {
+				t.Errorf("PopFront() gotArr = %v, want %v", gotArr, tt.wantArr)
+			}
+			if !reflect.DeepEqual(gotR, tt.wantR) {
+				t.Errorf("PopFront() gotR = %v, want %v", gotR, tt.wantR)
+			}
+		})
+	}
+}
+
+func TestPopBack(t *testing.T) {
+	type args[T any] struct {
+		a []T
+	}
+	type testCase[T any] struct {
+		name    string
+		args    args[T]
+		wantArr []T
+		wantR   T
+	}
+	tests := []testCase[int]{
+		{
+			name: "test1",
+			args: args[int]{
+				a: []int{1, 2, 3},
+			},
+			wantArr: []int{1, 2},
+			wantR:   3,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotArr, gotR := PopBack(tt.args.a)
+			if !reflect.DeepEqual(gotArr, tt.wantArr) {
+				t.Errorf("PopBack() gotArr = %v, want %v", gotArr, tt.wantArr)
+			}
+			if !reflect.DeepEqual(gotR, tt.wantR) {
+				t.Errorf("PopBack() gotR = %v, want %v", gotR, tt.wantR)
+			}
+		})
+	}
+}
+
+func TestPopFrontN(t *testing.T) {
+	type args[T any] struct {
+		a []T
+		n int
+	}
+	type testCase[T any] struct {
+		name    string
+		args    args[T]
+		wantArr []T
+		wantR   []T
+	}
+	tests := []testCase[int]{
+		{
+			name: "test1",
+			args: args[int]{
+				a: []int{1, 2, 3},
+				n: 2,
+			},
+			wantArr: []int{3},
+			wantR:   []int{1, 2},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotArr, gotR := PopFrontN(tt.args.a, tt.args.n)
+			if !reflect.DeepEqual(gotArr, tt.wantArr) {
+				t.Errorf("PopFrontN() gotArr = %v, want %v", gotArr, tt.wantArr)
+			}
+			if !reflect.DeepEqual(gotR, tt.wantR) {
+				t.Errorf("PopFrontN() gotR = %v, want %v", gotR, tt.wantR)
+			}
+		})
+	}
+}
+
+func TestPopBackN(t *testing.T) {
+	type args[T any] struct {
+		a []T
+		n int
+	}
+	type testCase[T any] struct {
+		name    string
+		args    args[T]
+		wantArr []T
+		wantR   []T
+	}
+	tests := []testCase[int]{
+		{
+			name: "test1",
+			args: args[int]{
+				a: []int{1, 2, 3},
+				n: 2,
+			},
+			wantArr: []int{1},
+			wantR:   []int{2, 3},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotArr, gotR := PopBackN(tt.args.a, tt.args.n)
+			if !reflect.DeepEqual(gotArr, tt.wantArr) {
+				t.Errorf("PopBackN() gotArr = %v, want %v", gotArr, tt.wantArr)
+			}
+			if !reflect.DeepEqual(gotR, tt.wantR) {
+				t.Errorf("PopBackN() gotR = %v, want %v", gotR, tt.wantR)
+			}
+		})
+	}
+}
+
+func TestSlice(t *testing.T) {
+	type args[T any] struct {
+		a     []T
+		start int
+		end   []int
+	}
+	type testCase[T any] struct {
+		name string
+		args args[T]
+		want []T
+	}
+	tests := []testCase[int]{
+		{
+			name: "test1",
+			args: args[int]{
+				a:     []int{1, 2, 3, 4, 5},
+				start: 1,
+				end:   []int{3},
+			},
+			want: []int{2, 3, 4},
+		}, {
+			name: "test2",
+			args: args[int]{
+				a:     []int{1, 2, 3, 4, 5},
+				start: 1,
+				end:   []int{2, 4},
+			},
+			want: []int{2, 3},
+		}, {
+			name: "test3",
+			args: args[int]{
+				a:     []int{1, 2, 3, 4, 5},
+				start: -1,
+				end:   []int{3, 4},
+			},
+			want: []int{5},
+		}, {
+			name: "test4",
+			args: args[int]{
+				a:     []int{1, 2, 3, 4, 5},
+				start: -1,
+				end:   []int{-3},
+			},
+			want: []int{5, 4, 3},
+		}, {
+			name: "test5",
+			args: args[int]{
+				a:     []int{1, 2, 3, 4, 5},
+				start: 1,
+				end:   []int{-3},
+			},
+			want: []int{2, 1},
+		}, {
+			name: "test6",
+			args: args[int]{
+				a:     []int{1, 2, 3, 4, 5},
+				start: 1,
+				end:   []int{3, 4, 5},
+			},
+			want: []int{2, 3, 4},
+		}, {
+			name: "test7",
+			args: args[int]{
+				a:     []int{1, 2, 3, 4, 5},
+				start: -2,
+				end:   []int{3, 4, 5},
+			},
+			want: []int{4, 5},
+		}, {
+			name: "test8",
+			args: args[int]{
+				a:     []int{1, 2, 3, 4, 5},
+				start: 2,
+				end:   []int{-3},
+			},
+			want: []int{3, 2, 1},
+		}, {
+			name: "test9",
+			args: args[int]{
+				a:     []int{1, 2, 3, 4, 5},
+				start: 2,
+				end:   []int{3, 4, 5},
+			},
+			want: []int{3, 4, 5},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Slice(tt.args.a, tt.args.start, tt.args.end...); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Slice() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

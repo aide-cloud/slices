@@ -1,6 +1,8 @@
 package slices
 
-import "sort"
+import (
+	"sort"
+)
 
 // Merge merges the specified slices into a new slice.
 //
@@ -501,4 +503,96 @@ func ReduceReverse[T, U any](a []T, f func(U, T) U, initial U) U {
 		result = f(result, a[i])
 	}
 	return result
+}
+
+// PushFront inserts the specified element at the beginning of the specified slice.
+//
+//	PushFront 将指定元素插入到指定切片的开头
+func PushFront[T any](a []T, v T) []T {
+	return append([]T{v}, a...)
+}
+
+// PushBack inserts the specified element at the end of the specified slice.
+//
+//	PushBack 将指定元素插入到指定切片的末尾
+func PushBack[T any](a []T, v T) []T {
+	return append(a, v)
+}
+
+// PopFront removes the first element from the specified slice and returns the new slice.
+//
+//	PopFront 返回一个包含指定切片元素的新切片，该切片删除第一个元素
+func PopFront[T any](a []T) (arr []T, r T) {
+	if len(a) == 0 {
+		return a, r
+	}
+	return a[1:], a[0]
+}
+
+// PopBack removes the last element from the specified slice and returns the new slice.
+//
+//	PopBack 从指定切片中删除最后一个元素并返回新切片
+func PopBack[T any](a []T) (arr []T, r T) {
+	if len(a) == 0 {
+		return a, r
+	}
+	return a[:len(a)-1], a[len(a)-1]
+}
+
+// PopFrontN removes the first n elements from the specified slice and returns the new slice.
+//
+//	PopFrontN 返回一个包含指定切片元素的新切片，该切片删除前n个元素
+func PopFrontN[T any](a []T, n int) (arr []T, r []T) {
+	if len(a) == 0 {
+		return a, r
+	}
+	if n > len(a) {
+		n = len(a)
+	}
+	return a[n:], a[:n]
+}
+
+// PopBackN removes the last n elements from the specified slice and returns the new slice.
+//
+//	PopBackN 返回一个包含指定切片元素的新切片，该切片删除后n个元素
+func PopBackN[T any](a []T, n int) (arr []T, r []T) {
+	if len(a) == 0 {
+		return a, r
+	}
+	if n > len(a) {
+		n = len(a)
+	}
+	return a[:len(a)-n], a[len(a)-n:]
+}
+
+// Slice returns a slice of the specified slice, from the specified start index to the specified number of original attributes.
+//
+//	Slice 返回指定切片的切片，从指定的开始索引到固定原属个数
+func Slice[T any](a []T, startIndex int, count ...int) []T {
+	// 允许-1表示最后一个元素
+	i := startIndex
+	if i < 0 {
+		i = len(a) + i
+	}
+
+	j := len(a)
+	if len(count) > 0 {
+		j = count[0]
+	}
+
+	if j < 0 {
+		i += 1
+		j = i + j
+		if j < 0 {
+			j = 0
+		}
+		return Reverse(a[j:i])
+	}
+
+	j = i + j
+	if j > len(a) {
+		j = len(a)
+	}
+
+	return a[i:j]
 }
