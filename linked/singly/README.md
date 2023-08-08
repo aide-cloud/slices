@@ -25,10 +25,13 @@ func main() {
 	fmt.Println(h.Show())
 
 	h.RemoveValue(func(val int) bool {
-		return val > 8
+		return val >= 8
 	})
 
+	h.Prepend(100).Append(200).Append(300).Append(400).Append(500)
 	fmt.Println(h.Show())
+	list = h.Slice()
+	fmt.Println(fmt.Sprintf("cap: %d, len: %d, %v", cap(list), len(list), list))
 }
 ```
 
@@ -40,5 +43,6 @@ cap: 5, len: 5, [1 2 3 4 5]
 (1)-->(2)-->(3)-->(4)-->(5)-->(6)-->(7)-->(8)-->(9)-->(10)
 cap: 10, len: 10, [1 2 3 4 5 6 7 8 9 10]
 (1)-->(3)-->(4)-->(5)-->(6)-->(7)-->(8)-->(9)-->(10)
-(1)-->(3)-->(4)-->(5)-->(6)-->(7)-->(8)
+(100)-->(1)-->(3)-->(4)-->(5)-->(6)-->(7)-->(200)-->(300)-->(400)-->(500)
+cap: 11, len: 11, [100 1 3 4 5 6 7 200 300 400 500]
 ```
