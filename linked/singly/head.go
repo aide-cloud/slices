@@ -164,11 +164,11 @@ func (h *Head[T]) Show() string {
 }
 
 func (h *Head[T]) Remove(index uint64) IHead[T] {
-	if index >= h.length {
+	if index >= h.Length() {
 		return h
 	}
 
-	if index == h.length-1 {
+	if index == h.Length()-1 {
 		return h.RemoveTail()
 	}
 
@@ -213,11 +213,11 @@ func (h *Head[T]) RemoveValue(fn func(val T) bool) IHead[T] {
 }
 
 func (h *Head[T]) RemoveTail() IHead[T] {
-	if h.length == 0 {
+	if h.Length() == 0 {
 		return h
 	}
 
-	if h.length == 1 {
+	if h.Length() == 1 {
 		h.start = nil
 		h.curr = nil
 		h.end = nil
@@ -226,7 +226,7 @@ func (h *Head[T]) RemoveTail() IHead[T] {
 	}
 
 	prev := h.start
-	for i := uint64(1); i < h.length-1; i++ {
+	for i := uint64(1); i < h.Length()-1; i++ {
 		prev = prev.Next()
 	}
 
@@ -255,7 +255,7 @@ func (h *Head[T]) InsertNode(index uint64, node INode[T]) IHead[T] {
 		return h.PrependNode(node)
 	}
 
-	if index >= h.length {
+	if index >= h.Length() {
 		return h.AppendNode(node)
 	}
 
@@ -284,7 +284,7 @@ func (h *Head[T]) Range(fn func(node INode[T]) bool) {
 }
 
 func (h *Head[T]) Slice() []T {
-	slice := make([]T, 0, h.length)
+	slice := make([]T, 0, h.Length())
 	for node := h.start; node != nil; node = node.Next() {
 		slice = append(slice, node.Value())
 	}
