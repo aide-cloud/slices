@@ -209,6 +209,9 @@ func (h *Head[T]) RemoveValue(fn func(val T) bool) IHead[T] {
 		prev = curr
 		curr = curr.Next()
 	}
+
+	h.end = prev
+
 	return h
 }
 

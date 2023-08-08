@@ -605,6 +605,11 @@ func TestHead_Last(t *testing.T) {
 
 func TestHead_PrependNode(t *testing.T) {
 	h := New(WithValues(1, 2, 3, 4, 5))
-	h.Prepend(100).Append(200)
+	t.Log(h.Show())
+	h.Remove(1)
+	h.RemoveValue(func(val int) bool {
+		return val > 3
+	})
+	h.Prepend(100).Append(200).Append(300)
 	t.Log(h.Show())
 }
