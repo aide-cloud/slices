@@ -2,6 +2,7 @@ package singly
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 )
 
@@ -51,6 +52,8 @@ type (
 		Find(fn func(val T) bool) (INode[T], bool)
 		FindIndex(fn func(val T) bool) (uint64, bool)
 		FindAll(fn func(val T) bool) []INode[T]
+		// Sort 排序
+		Sort(fn func(a, b T) bool) IHead[T]
 	}
 )
 
@@ -63,6 +66,22 @@ func New[T any](opts ...Option[T]) IHead[T] {
 }
 
 var _ IHead[int] = &Head[int]{} // 确保 Head[int] 实现了 IHead[int] 接口
+
+func (h *Head[T]) Sort(fn func(a, b T) bool) IHead[T] {
+	if h.IsEmpty() {
+		return h
+	}
+	nodes := h.Slice()
+	sort.Slice(nodes, func(i, j int) bool {
+		return fn(nodes[i], nodes[j])
+	})
+
+	h.Clear()
+	for _, node := range nodes {
+		h.Append(node)
+	}
+	return h
+}
 
 func (h *Head[T]) FindAll(fn func(val T) bool) (nodes []INode[T]) {
 	if h.IsEmpty() {

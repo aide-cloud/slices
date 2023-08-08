@@ -476,3 +476,18 @@ func TestHead_Curr(t *testing.T) {
 		h.Next()
 	}
 }
+
+func TestHead_Sort(t *testing.T) {
+	h := New(WithValues(1, 2, 4, 3, 5, 6, 7, 9, 8, 10))
+	if h.Length() == 10 {
+		t.Log("ok")
+	} else {
+		t.Error("err")
+	}
+
+	h.Sort(func(a, b int) bool {
+		return a > b
+	})
+
+	t.Log(h.Show())
+}
