@@ -18,7 +18,8 @@ type Head[T any] struct {
 
 type (
 	IHead[T any] interface {
-		Node() INode[T]
+		First() INode[T]
+		Last() INode[T]
 		Length() uint64
 		IsEmpty() bool
 		Clear()
@@ -330,8 +331,12 @@ func (h *Head[T]) Next() INode[T] {
 	return curr
 }
 
-func (h *Head[T]) Node() INode[T] {
+func (h *Head[T]) First() INode[T] {
 	return h.start
+}
+
+func (h *Head[T]) Last() INode[T] {
+	return h.end
 }
 
 func (h *Head[T]) Length() uint64 {
