@@ -491,3 +491,114 @@ func TestHead_Sort(t *testing.T) {
 
 	t.Log(h.Show())
 }
+
+func TestHead_RemoveValue(t *testing.T) {
+	h := New(WithValues(5, 5, 5, 1, 2, 3, 4, 5, 5, 6, 5, 5, 5, 7, 5, 8, 9, 10, 5, 5, 5))
+	if h.Length() == 21 {
+		t.Log("ok")
+	} else {
+		t.Error("err")
+	}
+
+	h.RemoveValue(func(val int) bool {
+		return val == 5
+	})
+
+	if h.Length() == 9 {
+		t.Log("ok")
+	} else {
+		t.Error("err")
+	}
+
+	t.Log(h.Show())
+
+	if reflect.DeepEqual(h.Slice(), []int{1, 2, 3, 4, 6, 7, 8, 9, 10}) {
+		t.Log("ok")
+	} else {
+		t.Error("err")
+	}
+}
+
+func TestHead_InsertNode1(t *testing.T) {
+	h := New(WithValues(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+
+	n1 := NewNode(100)
+	n2 := NewNode(200)
+	n2.SetNext(n1)
+	h.InsertNode(1, n2)
+
+	t.Log(h.Show())
+
+	if h.Length() == 12 {
+		t.Log("ok")
+	} else {
+		t.Error("err")
+	}
+
+	if reflect.DeepEqual(h.Slice(), []int{1, 200, 100, 2, 3, 4, 5, 6, 7, 8, 9, 10}) {
+		t.Log("ok")
+	} else {
+		t.Error("err")
+	}
+}
+
+func TestHead_InsertNode2(t *testing.T) {
+	h1 := New(WithValues(1, 2, 3, 4, 5))
+	h2 := New(WithValues(6, 7, 8, 9, 10))
+
+	h1.InsertNode(5, h2.First())
+	t.Log(h1.Show())
+
+	if h1.Length() == 10 {
+		t.Log("ok")
+	} else {
+		t.Error("err")
+	}
+}
+
+func TestHead_InsertNode3(t *testing.T) {
+	h1 := New(WithValues(1, 2, 3, 4, 5))
+	h2 := New(WithValues(6, 7, 8, 9, 10))
+
+	h1.InsertNode(2, h2.First())
+	t.Log(h1.Show())
+
+	if h1.Length() == 10 {
+		t.Log("ok")
+	} else {
+		t.Error("err")
+	}
+
+	if reflect.DeepEqual(h1.Slice(), []int{1, 2, 6, 7, 8, 9, 10, 3, 4, 5}) {
+		t.Log("ok")
+	} else {
+		t.Error("err")
+	}
+}
+
+func TestHead_Last(t *testing.T) {
+	h := New(WithValues(1, 2, 3, 4, 5))
+	t.Log(h.Last().Value())
+
+	if h.Last().Value() == 5 {
+		t.Log("ok")
+	} else {
+		t.Error("err")
+	}
+
+	h2 := New(WithValues(6, 7, 8, 9, 10))
+	h.Last().SetNext(h2.First())
+	t.Log(h.Show())
+
+	if h.Length() == 10 {
+		t.Log("ok")
+	} else {
+		t.Error("err", h.Length())
+	}
+
+	if h.Last().Value() == 10 {
+		t.Log("ok")
+	} else {
+		t.Error("err", h.Last().Value())
+	}
+}

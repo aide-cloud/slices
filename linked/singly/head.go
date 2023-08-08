@@ -41,7 +41,7 @@ type (
 		InsertNode(index uint64, node INode[T]) IHead[T]
 		// Remove 移除
 		Remove(index uint64) IHead[T]
-		RemoveValue(val T) IHead[T]
+		RemoveValue(fn func(val T) bool) IHead[T]
 		RemoveHead() IHead[T]
 		RemoveTail() IHead[T]
 		// Reverse 反转
@@ -186,8 +186,30 @@ func (h *Head[T]) Remove(index uint64) IHead[T] {
 	return h
 }
 
-func (h *Head[T]) RemoveValue(val T) IHead[T] {
-	panic("implement me")
+func (h *Head[T]) RemoveValue(fn func(val T) bool) IHead[T] {
+	if h.IsEmpty() {
+		return h
+	}
+
+	for fn(h.start.Value()) {
+		h.start = h.start.Next()
+		h.length--
+	}
+
+	prev := h.start
+	curr := h.start.Next()
+
+	for curr != nil {
+		if fn(curr.Value()) {
+			prev.SetNext(curr.Next())
+			h.length--
+			curr = prev.Next()
+			continue
+		}
+		prev = curr
+		curr = curr.Next()
+	}
+	return h
 }
 
 func (h *Head[T]) RemoveTail() IHead[T] {
@@ -214,7 +236,7 @@ func (h *Head[T]) RemoveTail() IHead[T] {
 }
 
 func (h *Head[T]) RemoveHead() IHead[T] {
-	if h.length == 0 {
+	if h.IsEmpty() {
 		return h
 	}
 
@@ -355,13 +377,23 @@ func (h *Head[T]) First() INode[T] {
 }
 
 func (h *Head[T]) Last() INode[T] {
+	h.calcLength()
 	return h.end
 }
 
 func (h *Head[T]) Length() uint64 {
+	h.calcLength()
 	return h.length
 }
 
 func (h *Head[T]) IsEmpty() bool {
+	h.calcLength()
 	return h.length == 0
+}
+
+func (h *Head[T]) calcLength() {
+	for h.end != nil && h.end.Next() != nil {
+		h.length++
+		h.end = h.end.Next()
+	}
 }
