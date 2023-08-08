@@ -602,3 +602,9 @@ func TestHead_Last(t *testing.T) {
 		t.Error("err", h.Last().Value())
 	}
 }
+
+func TestHead_PrependNode(t *testing.T) {
+	h := New(WithValues(1, 2, 3, 4, 5))
+	h.Prepend(100).Append(200)
+	t.Log(h.Show())
+}

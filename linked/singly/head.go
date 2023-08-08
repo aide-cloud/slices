@@ -324,29 +324,11 @@ func (h *Head[T]) setFirst(node INode[T]) {
 }
 
 func (h *Head[T]) Append(val T) IHead[T] {
-	h.length++
-	if h.start == nil {
-		h.setFirst(NewNode[T](val))
-		return h
-	}
-
-	h.end.SetNext(NewNode[T](val))
-	h.end = h.end.Next()
-	return h
+	return h.AppendNode(NewNode[T](val))
 }
 
 func (h *Head[T]) Prepend(val T) IHead[T] {
-	h.length++
-	if h.start == nil {
-		h.setFirst(NewNode[T](val))
-		return h
-	}
-
-	node := NewNode[T](val)
-	node.SetNext(h.start)
-	h.start = node
-
-	return h
+	return h.PrependNode(NewNode(val))
 }
 
 func (h *Head[T]) Clear() {
