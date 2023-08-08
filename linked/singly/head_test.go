@@ -613,3 +613,34 @@ func TestHead_PrependNode(t *testing.T) {
 	h.Prepend(100).Append(200).Append(300)
 	t.Log(h.Show())
 }
+
+func TestHead_New(t *testing.T) {
+	h := New(WithValues(1, 2, 3, 4, 5))
+	node := NewNode(100)
+	node.SetNext(h.First())
+	h.AppendNode(node)
+	t.Log(h.Show())
+	t.Log(h.Length())
+	t.Log(h.Slice())
+	if h.Length() == 6 {
+		t.Log("ok")
+	} else {
+		t.Error("err", h.Length())
+	}
+}
+
+func TestHead_Length(t *testing.T) {
+	h := New(WithValues(1, 2, 3, 4, 5))
+	node := NewNode(100)
+	node2 := NewNode(200)
+	node2.SetNext(node)
+	node.SetNext(node2)
+	h.AppendNode(node)
+	t.Log(h.Length())
+	t.Log(h.Show())
+	t.Log(h.Length())
+	t.Log(h.Length())
+	t.Log(h.Length())
+	list := h.Slice()
+	t.Log(len(list), list)
+}

@@ -15,6 +15,8 @@ type Head[T any] struct {
 	curr INode[T]
 	// end 结尾节点
 	end INode[T]
+	// 环节点
+	cycle INode[T]
 }
 
 type (
@@ -288,7 +290,12 @@ func (h *Head[T]) Range(fn func(node INode[T]) bool) {
 
 func (h *Head[T]) Slice() []T {
 	slice := make([]T, 0, h.Length())
+	flagMap := make(map[INode[T]]struct{})
 	for node := h.start; node != nil; node = node.Next() {
+		if _, ok := flagMap[node]; ok {
+			break
+		}
+		flagMap[node] = struct{}{}
 		slice = append(slice, node.Value())
 	}
 	return slice
@@ -377,7 +384,14 @@ func (h *Head[T]) IsEmpty() bool {
 }
 
 func (h *Head[T]) calcLength() {
-	for h.end != nil && h.end.Next() != nil {
+	flagMap := make(map[INode[T]]struct{})
+	for h.end != nil && h.end.Next() != nil && h.end.Next() != h.start && h.end.Next() != h.cycle {
+		if _, ok := flagMap[h.end.Next()]; ok {
+			h.cycle = h.end.Next()
+			h.length--
+			break
+		}
+		flagMap[h.end.Next()] = struct{}{}
 		h.length++
 		h.end = h.end.Next()
 	}
